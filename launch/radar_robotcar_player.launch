@@ -1,0 +1,62 @@
+<launch>
+
+  <include file="$(find radar_robotcar_player)/launch/radar_robotcar.launch">
+    <arg name="agent_name" value="robotcar_0" />
+    <arg name="dataset"
+      value="/workspaces/collaborative-scene-graphs/data/radar-robotcar/2019-01-11-13-24-51-radar-oxford-10k" />
+    <arg name="sdk" value="/workspaces/collaborative-scene-graphs/src/robotcar_dataset_sdk" />
+    <!-- Remove first 120s of sequence -->
+    <arg name="clip_first_secs" value="120" />
+    <!-- play immediately -->
+    <arg name="startup_delay_secs" value="0" />
+  </include>
+
+  <!-- for multi-agent: uncomment to play two more sequences in parallel after a
+       {60,120}second delay -->
+
+  <!-- <include file="$(find radar_robotcar_player)/launch/radar_robotcar.launch" >
+    <arg name="agent_name" value="robotcar_1" />
+    <arg name="dataset"
+  value="/workspaces/collaborative-scene-graphs/data/radar-robotcar/2019-01-14-14-15-12-radar-oxford-10k"
+  />
+    <arg name="sdk" value="/workspaces/collaborative-scene-graphs/src/robotcar_dataset_sdk" />
+    <arg name="clip_first_secs" value="120" />
+    <arg name="startup_delay_secs" value="60" />
+  </include>
+
+  <include file="$(find radar_robotcar_player)/launch/radar_robotcar.launch" >
+    <arg name="agent_name" value="robotcar_2" />
+    <arg name="dataset"
+  value="/workspaces/collaborative-scene-graphs/data/radar-robotcar/2019-01-15-13-06-37-radar-oxford-10k"
+  />
+    <arg name="sdk" value="/workspaces/collaborative-scene-graphs/src/robotcar_dataset_sdk" />
+    <arg name="clip_first_secs" value="120" />
+    <arg name="startup_delay_secs" value="120" />
+  </include> -->
+
+  <!-- This is for mapviz? -->
+  <!-- <node pkg="swri_transform_util" type="initialize_origin.py" name="initialize_origin">
+    <param name="local_xy_frame" value="/map" />
+    <param name="local_xy_origin" value="auto" />
+    <rosparam param="local_xy_origins">
+      [{ name: swri,
+      latitude: 29.45196669,
+      longitude: -98.61370577,
+      altitude: 233.719,
+      heading: 0.0},
+
+      { name: back_40,
+      latitude: 29.447507,
+      longitude: -98.629367,
+      altitude: 200.0,
+      heading: 0.0}]
+    </rosparam>
+    <remap from="fix" to="/oxford/gps/gps" />
+  </node> -->
+
+  <!-- Autostart rviz. Disabled for now. -->
+  <!-- <node name="rviz" pkg="rviz" type="rviz" args="-d $(find
+  radar_robotcar_player)/launch/rviz/radar_robotcar_player.rviz"/> -->
+  <!-- <node pkg="mapviz" type="mapviz" name="mapviz"></node> -->
+
+</launch>
