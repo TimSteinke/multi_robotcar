@@ -26,17 +26,15 @@ Obtain the data and other resources from here (requires permission):
 </div>
 
 Only the following sensors are played (no 2D lidars, no radar):
-**Cameras:**
+
+- **Cameras:**
 1 x Point Grey Bumblebee XB3
 3 x Point Grey Grasshopper2
 
-**LiDAR:**
-2 x SICK LMS-151 2D LIDAR
-
-**GPS/INS:**
+- **GPS/INS:**
 1 x NovAtel SPAN-CPT ALIGN inertial and GPS navigation system
 
-**LiDAR:**
+- **3D LiDAR:**
 2 x Velodyne HDL-32E - Mounted to the left and right of the Navtech CTS350-X radar.
 
 ## Building and running
