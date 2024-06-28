@@ -169,12 +169,12 @@ void mono::publish(std::string cam) {
     std::string filename = stamps_str[i] + ".png";
     std::string filepath = source_path + filename;
 
-    read_img_to_msg(filepath, frame, stamps_ros[i], cv::COLOR_BayerBG2BGR,
-                    image_msg);
+    read_img_to_msg(filepath, frame, oxford_time_to_now(stamps_ros[i]),
+                    cv::COLOR_BayerBG2BGR, image_msg);
 
     info_msg.header.frame_id = tf_prefix + "/" + frame;
 
-    info_msg.header.stamp = stamps_ros[i];
+    info_msg.header.stamp = oxford_time_to_now(stamps_ros[i]);
 
     // wait until it's time to publish this message
     ros::Duration t_wall_since_start = ros::Time::now() - t0_wall;
@@ -196,10 +196,9 @@ void mono::publish(std::string cam) {
     double abs_time_error =
         std::abs((t_wall_since_start - t_oxford_since_start).toNSec());
 
-    if (abs_time_error > avg_frametime_nsecs * 2 && i < stamps_str.size()) {
+    if (abs_time_error > avg_frametime_nsecs * 2 && i < stamps_str.size() - 1) {
       ros::Time target_time = t0_oxford + t_wall_since_start;
       i = find_target_idx(stamps_ros, target_time);
-      continue;
     }
 
     i++;
@@ -287,20 +286,20 @@ void stereo::publish() {
     right_path = source_path + "/right/" + filename;
 
     sensor_msgs::ImagePtr img_left, img_right, img_centre;
-    ros::Time stamp = stamps_ros[i];
+    ros::Time stamp_now = oxford_time_to_now(stamps_ros[i]);
 
-    read_img_to_msg(left_path, stereo_left_frame, stamp, cv::COLOR_BayerGR2BGR,
-                    img_left);
-    read_img_to_msg(centre_path, stereo_centre_frame, stamp,
+    read_img_to_msg(left_path, stereo_left_frame, stamp_now,
+                    cv::COLOR_BayerGR2BGR, img_left);
+    read_img_to_msg(centre_path, stereo_centre_frame, stamp_now,
                     cv::COLOR_BayerGR2BGR, img_right);
-    read_img_to_msg(right_path, stereo_right_frame, stamp,
+    read_img_to_msg(right_path, stereo_right_frame, stamp_now,
                     cv::COLOR_BayerGR2BGR, img_centre);
 
-    info_wide_left.header.stamp = stamp;
-    info_wide_right.header.stamp = stamp;
+    info_wide_left.header.stamp = stamp_now;
+    info_wide_right.header.stamp = stamp_now;
 
-    info_narrow_left.header.stamp = stamp;
-    info_narrow_right.header.stamp = stamp;
+    info_narrow_left.header.stamp = stamp_now;
+    info_narrow_right.header.stamp = stamp_now;
 
     ros::Duration t_wall_since_start = ros::Time::now() - t0_wall;
     ros::Duration next_publishing_time = stamps_ros[i] - t0_oxford;
@@ -330,10 +329,9 @@ void stereo::publish() {
     double abs_time_error =
         std::abs((t_wall_since_start - t_oxford_since_start).toNSec());
 
-    if (abs_time_error > avg_frametime_nsecs * 2 && i < stamps_str.size()) {
+    if (abs_time_error > avg_frametime_nsecs * 2 && i < stamps_str.size() - 1) {
       ros::Time target_time = t0_oxford + t_wall_since_start;
       i = find_target_idx(stamps_ros, target_time);
-      continue;
     }
 
     i++;
@@ -463,7 +461,7 @@ void lidar::publish(std::string left_or_right) {
 
     sensor_msgs::PointCloud2 points_msg;
     pcl::toROSMsg(points, points_msg);
-    points_msg.header.stamp = stamps_ros[i];
+    points_msg.header.stamp = oxford_time_to_now(stamps_ros[i]);
     points_msg.header.frame_id = tf_prefix + "/" + frame;
 
     ros::Duration t_wall_since_start = ros::Time::now() - t0_wall;
@@ -492,13 +490,12 @@ void lidar::publish(std::string left_or_right) {
     double abs_time_error =
         std::abs((t_wall_since_start - t_oxford_since_start).toNSec());
 
-    if (abs_time_error > avg_frametime_nsecs * 2 && i < stamps_str.size()) {
+    if (abs_time_error > avg_frametime_nsecs * 2 && i < stamps_str.size() - 1) {
       ros::Time target_time = t0_oxford + t_wall_since_start;
       int old_i = i;
       i = find_target_idx(stamps_ros, target_time);
       ROS_DEBUG_THROTTLE(0.1, "%s skip %d", topic.c_str(),
                          static_cast<int>(i) - old_i);
-      continue;
     }
 
     i++;
@@ -674,7 +671,7 @@ void gps::publishgps() {
   while (i < gps_readings.size() && ros::ok()) {
     sensor_msgs::NavSatFix gps_position;
     gps_position.header.frame_id = tf_prefix + "/" + gps_frame;
-    gps_position.header.stamp = stamps_gps[i];
+    gps_position.header.stamp = oxford_time_to_now(stamps_gps[i]);
     // TODO: why are these hardcoded?
     gps_position.status.status = 0;
     gps_position.status.service = 1;
@@ -716,7 +713,7 @@ void gps::publishins() {
   while (i < ins_readings.size() && ros::ok()) {
     sensor_msgs::NavSatFix gps;
     gps.header.frame_id = tf_prefix + "/" + gps_frame;
-    gps.header.stamp = stamps_ins[i];
+    gps.header.stamp = oxford_time_to_now(stamps_ins[i]);
     gps.status.status = 0;
     gps.status.service = 1;
     gps.latitude = ins_readings[i].latitude;
@@ -727,7 +724,7 @@ void gps::publishins() {
     tf::Quaternion q = tf::createQuaternionFromRPY(
         ins_readings[i].roll, ins_readings[i].pitch, ins_readings[i].yaw);
     imu.header.frame_id = tf_prefix + "/" + gps_frame;
-    imu.header.stamp = stamps_ins[i];
+    imu.header.stamp = gps.header.stamp;
     imu.orientation.x = q.x();
     imu.orientation.y = q.y();
     imu.orientation.z = q.z();
@@ -870,12 +867,17 @@ size_t find_target_idx(const std::vector<ros::Time> &timestamps,
   // assumes timestamps to be ordered sequentially. Returns the index i in
   // timestamps that is just before the target_time, i.e.:
   //               timestamps[i] <= target_time <= timestamps[i+1]
-  // if the target_time is before the first timestamp or after the last
-  // timestamp, an invalidargument exception is thrown.
-  if (target_time < timestamps[0] ||
-      target_time > timestamps[timestamps.size() - 1])
+  // if the target_time is before the first timestamp, an invalidargument exception is thrown.
+  // if the target_time is after the last timestamp, will return the last idx
+  if (target_time < timestamps[0]) {
     throw std::invalid_argument(
-        "target_time must be in [ timestamps[0],timestamps[N] ]");
+        "target_time must be after earliest timestamp!");
+
+  }
+  if (target_time > timestamps[timestamps.size() - 1]) {
+    // return last idx
+    return timestamps.size() - 1;
+  }
 
   for (size_t i = 0; i < timestamps.size() - 1; ++i) {
     if (timestamps[i] <= target_time && target_time <= timestamps[i + 1])
@@ -884,6 +886,11 @@ size_t find_target_idx(const std::vector<ros::Time> &timestamps,
 
   // if this error is thrown, the assumptions are wrong.
   throw std::range_error("can't find matching target index");
+}
+
+ros::Time oxford_time_to_now(const ros::Time &oxford_time) {
+  ros::Time result(t0_wall + (oxford_time - t0_oxford));
+  return result;
 }
 
 } // end namespace sensor

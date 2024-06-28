@@ -79,4 +79,6 @@ int main(int argc, char **argv) {
   thread_lidar_right.join();
   thread_gps.join();
   thread_ins.join();
+  ROS_INFO("All sequences finished, player %s will now exit.", tf_prefix.c_str());
+  ros::shutdown();
 }
