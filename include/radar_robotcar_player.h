@@ -194,6 +194,8 @@ size_t find_target_idx(const std::vector<ros::Time> &timestamps,
 void read_img_to_msg(std::string path, std::string frame, ros::Time stamp,
                      int cv_encoding, sensor_msgs::ImagePtr &img_msg_result);
 
+ros::Time oxford_time_to_now(const ros::Time &oxford_time);
+
 } // end namespace sensor
 
 #endif /* SRC_RADAR_ROBOTCAR_PLAYER_INCLUDE_RADAR_ROBOTCAR_PLAYER_H_ */
