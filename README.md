@@ -1,7 +1,7 @@
 # ROS Radar Robotcar Player
 This is a ROS node (targeting ROS noetic) for playing the Lidar, Camera, and GPS/INS modalities of the [Oxford Radar RobotCar Dataset](https://oxford-robotics-institute.github.io/radar-robotcar-dataset/) in real-time.
 
-**Note:** This is a rewrite of the [radar-robotcar-dataset-ros](https://github.com/Rongxi-Zhang/radar-robotcar-dataset-ros/tree/ros1) by Rongxi Zhang. The original license ([GPL v3](./LICENSE)) has been kept.
+**Note:** This is a rewrite of [radar-robotcar-dataset-ros](https://github.com/Rongxi-Zhang/radar-robotcar-dataset-ros/tree/ros1) by Rongxi Zhang. The original license ([GPL v3](./LICENSE)) has been kept.
 
 **Changes**:
 - No saving to rosbag
@@ -38,7 +38,7 @@ Only the following sensors are played (no 2D lidars, no radar):
 2 x Velodyne HDL-32E - Mounted to the left and right of the Navtech CTS350-X radar.
 
 ## Building and running
-0. Download the [dataset and SDK](README.md#Dataset)
+0. Download the [dataset and SDK](#dataset)
 1. Place this ROS package in the `catkin_ws/src` directory of your catkin workspace.
 2. Install dependencies manually (See CMakeLists.txt and package.xml) or via rosdep:
     `rosdep install --from-paths -i -y catkin_ws/src`
