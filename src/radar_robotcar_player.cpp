@@ -408,7 +408,7 @@ void lidar::publish(std::string left_or_right) {
 
   ROS_INFO("Will now publish LiDAR data on: %s", lidar_pub.getTopic().c_str());
 
-  pcl::PointCloud<pcl::PointXYZI> points;
+  pcl::PointCloud<pcl::PointXYZINormal> points;
   points.clear();
   points.reserve(1e6);
 
@@ -442,7 +442,7 @@ void lidar::publish(std::string left_or_right) {
 
     for (size_t i = 0; i < num_entries; ++i) { // N*4, not 4*N!!
       if (file.good() && !file.eof()) {
-        pcl::PointXYZI point;
+        pcl::PointXYZINormal point;
         file.read((char *)&point.x, sizeof(float));
         points.push_back(point);
       }
