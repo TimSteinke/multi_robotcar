@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
   ros::init(argc, argv, "radar_robotcar_player",
             ros::init_options::AnonymousName);
 
-  ros::NodeHandle nh("~");
+  ros::NodeHandle nh;
 
   ros::console::set_logger_level(ROSCONSOLE_DEFAULT_NAME,
                                  ros::console::levels::Info);

@@ -1,87 +1,87 @@
 <?xml version="1.0"?>
 <robot name="placeholder">
 
-  <link name="placeholder/base_link">
+  <link name="base_link">
   </link>
 
-  <link name="placeholder/stereo_left">
+  <link name="stereo_left">
   </link>
 
-  <link name="placeholder/stereo_right">
+  <link name="stereo_right">
   </link>
 
-  <link name="placeholder/stereo_centre">
+  <link name="stereo_centre">
   </link>
 
-  <link name="placeholder/mono_left">
+  <link name="mono_left">
   </link>
 
-  <link name="placeholder/mono_right">
+  <link name="mono_right">
   </link>
 
-  <link name="placeholder/mono_rear">
+  <link name="mono_rear">
   </link>
 
-  <link name="placeholder/velodyne_left">
+  <link name="velodyne_left">
   </link>
 
-  <link name="placeholder/velodyne_right">
+  <link name="velodyne_right">
   </link>
 
-  <link name="placeholder/gps_ins">
+  <link name="gps_ins">
   </link>
 
   <joint name="base_link_to_stereo_left" type="fixed">
-    <parent link="placeholder/base_link" />
-    <child link="placeholder/stereo_left" />
+    <parent link="base_link" />
+    <child link="stereo_left" />
     <origin rpy="3.1416 0 0" xyz="0.69 0.12 1.4" />
   </joint>
 
   <joint name="stereo_left_to_stereo_centre" type="fixed">
-    <parent link="placeholder/stereo_left" />
-    <child link="placeholder/stereo_centre" />
+    <parent link="stereo_left" />
+    <child link="stereo_centre" />
     <origin rpy="0 0 0" xyz=" 0 0.119997 0" />
   </joint>
 
   <joint name="stereo_left_to_stereo_right" type="fixed">
-    <parent link="placeholder/stereo_left" />
-    <child link="placeholder/stereo_right" />
+    <parent link="stereo_left" />
+    <child link="stereo_right" />
     <origin rpy="0 0 0" xyz=" 0 0.239983 0" />
   </joint>
 
   <joint name="stereo_left_to_mono_left" type="fixed">
-    <parent link="placeholder/stereo_left" />
-    <child link="placeholder/mono_left" />
+    <parent link="stereo_left" />
+    <child link="mono_left" />
     <origin rpy="0.2079 -0.2339 1.2321" xyz="-0.0905 1.6375 0.2803" />
   </joint>
 
   <joint name="stereo_left_to_mono_right" type="fixed">
-    <parent link="placeholder/stereo_left" />
-    <child link="placeholder/mono_right" />
+    <parent link="stereo_left" />
+    <child link="mono_right" />
     <origin rpy="-0.1961 -0.2469 -1.2675" xyz="-0.2587 -1.6810 0.3226" />
   </joint>
 
   <joint name="stereo_left_to_mono_rear" type="fixed">
-    <parent link="placeholder/stereo_left" />
-    <child link="placeholder/mono_rear" />
+    <parent link="stereo_left" />
+    <child link="mono_rear" />
     <origin rpy="-0.0119 -0.2498 3.1283" xyz="-2.0582 0.0894 0.3675" />
   </joint>
 
   <joint name="stereo_left_to_velodyne_left" type="fixed">
-    <parent link="placeholder/stereo_left" />
-    <child link="placeholder/velodyne_left" />
+    <parent link="stereo_left" />
+    <child link="velodyne_left" />
     <origin rpy="-0.0053948 -0.041998 -3.1337" xyz="-0.60072 -0.34077 -0.26837" />
   </joint>
 
   <joint name="stereo_left_to_velodyne_right" type="fixed">
-    <parent link="placeholder/stereo_left" />
-    <child link="placeholder/velodyne_right" />
+    <parent link="stereo_left" />
+    <child link="velodyne_right" />
     <origin rpy="0.0027052 -0.041999 -3.1357" xyz="-0.61153 0.55676 -0.27023" />
   </joint>
 
   <joint name="stereo_left_to_gps_ins" type="fixed">
-    <parent link="placeholder/stereo_left" />
-    <child link="placeholder/gps_ins" />
+    <parent link="stereo_left" />
+    <child link="gps_ins" />
     <origin rpy="-0.0125 0.0400 0.0050" xyz="-1.7132 0.1181 1.1948" />
   </joint>
 </robot>

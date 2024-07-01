@@ -2,33 +2,30 @@
   <arg name="dataset"
     default="/workspaces/collaborative-scene-graphs/data/radar-robotcar/2019-01-11-13-24-51-radar-oxford-10k" />
   <arg name="sdk" default="/workspaces/collaborative-scene-graphs/src/robotcar_dataset_sdk" />
-  <arg name="agent_name" default="robotcar_0" />
+  <arg name="tf_prefix" default="robotcar_0" />
   <arg name="clip_first_secs" default="0" />
   <arg name="startup_delay_secs" default="0" />
 
-  <!-- generate urdf on the fly and store in param -->
-  <param name="$(arg agent_name)_robot_description"
-    command="$(find radar_robotcar_player)/scripts/generate_urdf.sh $(find radar_robotcar_player)/launch/urdf/robotcar.xml $(arg agent_name)" />
+  <!-- full paths to the dataset folder -->
+  <param name="dataset" value="$(arg dataset)" />
+  <!-- full path to the base robotcar sdk (NOT radar robotcar sdk) -->
+  <param name="sdk" value="$(arg sdk)" />
+  <!-- remap the frames -->
+  <param name="tf_prefix" value="$(arg tf_prefix)" />
+  <!-- remove the first X seconds from the sequence -->
+  <param name="clip_first_secs" value="$(arg clip_first_secs)" />
+  <!-- start with a delay of X seconds -->
+  <param name="startup_delay_secs" value="$(arg startup_delay_secs)" />
 
   <!-- start this player node -->
-  <node name="$(arg agent_name)" pkg="radar_robotcar_player" type="radar_robotcar_player_node"
-    output="screen" respawn="false">
-    <!-- full paths to the dataset folder -->
-    <param name="dataset" value="$(arg dataset)" />
-    <!-- full path to the base robotcar sdk (NOT radar robotcar sdk) -->
-    <param name="sdk" value="$(arg sdk)" />
-    <!-- remap the frames -->
-    <param name="tf_prefix" value="$(arg agent_name)" />
-    <!-- remove the first X seconds from the sequence -->
-    <param name="clip_first_secs" value="$(arg clip_first_secs)" />
-    <!-- start with a delay of X seconds -->
-    <param name="startup_delay_secs" value="$(arg startup_delay_secs)" />
-  </node>
+  <node name="radar_robotcar_player" pkg="radar_robotcar_player" type="radar_robotcar_player_node"
+    output="screen" respawn="false" required="true" />
 
   <!-- Publish URDF -->
-  <node name="robot_state_publisher_$(arg agent_name)" pkg="robot_state_publisher"
-    type="robot_state_publisher">
-    <remap from="robot_description" to="$(arg agent_name)_robot_description" />
-  </node>
+  <param name="robot_description"
+    command="cat $(find radar_robotcar_player)/launch/urdf/robotcar.xml" />
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher"
+    type="robot_state_publisher" required="true" />
 
 </launch>
