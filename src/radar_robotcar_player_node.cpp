@@ -69,6 +69,7 @@ int main(int argc, char **argv) {
 
   std::thread thread_gps(&sensor::gps::publishgps, &gps);
   std::thread thread_ins(&sensor::gps::publishins, &gps);
+  std::thread thread_ins_pose(&sensor::gps::publish_ins_pose_solution, &gps);
 
   // wait for threads to finish
   thread_mono_left.join();
@@ -79,6 +80,7 @@ int main(int argc, char **argv) {
   thread_lidar_right.join();
   thread_gps.join();
   thread_ins.join();
+  thread_ins_pose.join();
   ROS_INFO("All sequences finished, player %s will now exit.", tf_prefix.c_str());
   ros::shutdown();
 }

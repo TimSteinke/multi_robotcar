@@ -6,6 +6,11 @@
   <arg name="clip_first_secs" default="0" />
   <arg name="startup_delay_secs" default="0" />
 
+  <!-- define the UTM world origin for the published INS pose (approximately the starting point) -->
+  <arg name="world_zero_northing" default="5735848.36" />
+  <arg name="world_zero_easting" default="620057.41" />
+  <arg name="world_zero_down" default="-114.70" />
+
   <!-- full paths to the dataset folder -->
   <param name="dataset" value="$(arg dataset)" />
   <!-- full path to the base robotcar sdk (NOT radar robotcar sdk) -->
@@ -17,15 +22,26 @@
   <!-- start with a delay of X seconds -->
   <param name="startup_delay_secs" value="$(arg startup_delay_secs)" />
 
+  <param name="world_zero_northing" value="$(arg world_zero_northing)" />
+  <param name="world_zero_easting" value="$(arg world_zero_easting)" />
+  <param name="world_zero_down" value="$(arg world_zero_down)" />
+
   <!-- start this player node -->
   <node name="radar_robotcar_player" pkg="radar_robotcar_player" type="radar_robotcar_player_node"
-    output="screen" respawn="false" required="true" />
+    output="screen" respawn="false" />
 
   <!-- Publish URDF -->
   <param name="robot_description"
     command="cat $(find radar_robotcar_player)/launch/urdf/robotcar.xml" />
 
-  <node name="robot_state_publisher" pkg="robot_state_publisher"
-    type="robot_state_publisher" required="true" />
+  <node name="robot_state_publisher_static" pkg="robot_state_publisher"
+    type="robot_state_publisher" required="true" >
+    <param name="use_tf_static" value="true" />
+  </node>
+
+  <node name="robot_state_publisher_nonstatic" pkg="robot_state_publisher"
+    type="robot_state_publisher" required="true" >
+    <param name="use_tf_static" value="false" />
+  </node>
 
 </launch>

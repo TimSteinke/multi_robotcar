@@ -22,6 +22,8 @@
 #include <sensor_msgs/NavSatFix.h>
 #include <sensor_msgs/PointCloud2.h>
 #include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
+#include <tf/transform_listener.h>
 #include <thread>
 
 namespace sensor {
@@ -171,6 +173,7 @@ public:
   gps(const std::string &dataset_path, ros::NodeHandle nh);
   void publishgps();
   void publishins();
+  void publish_ins_pose_solution();
 }; // class gps/ins
 
 // namespace functions
