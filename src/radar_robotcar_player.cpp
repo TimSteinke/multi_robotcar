@@ -665,10 +665,10 @@ void gps::publish_ins_pose_solution() {
     ros::shutdown();
   }
 
-  tf::StampedTransform tf_gps_to_base_link;
-  tf_listener.lookupTransform(tf_prefix + "/" + "base_link", tf_prefix + "/" + gps_frame, ros::Time::now(),
-                              tf_gps_to_base_link);
-
+  // tf::StampedTransform gps2baselink;
+  // tf_listener.lookupTransform(tf_prefix + "/" + "base_link", tf_prefix + "/" + gps_frame, ros::Time::now(),
+  //                             gps2baselink);
+  
   ROS_INFO("Will now publish INS pose solution %s and on tf as transform between world and %s",
            pose_pub.getTopic().c_str(), (tf_prefix + "/base_link").c_str());
 
@@ -682,22 +682,22 @@ void gps::publish_ins_pose_solution() {
 
   size_t i = 0;
   while (i < ins_readings.size() && ros::ok()) {
-    float x = ins_readings[i].easting - world_zero_easting;
-    float y = ins_readings[i].northing - world_zero_northing;
+    float x = ins_readings[i].northing - world_zero_northing;
+    float y = ins_readings[i].easting - world_zero_easting;
     float z = ins_readings[i].down - world_zero_down;
 
     float roll = ins_readings[i].roll;
     float pitch = ins_readings[i].pitch;
     float yaw = ins_readings[i].yaw;
 
-    tf::Transform pose_in_gps_frame;
-    pose_in_gps_frame.setOrigin(tf::Vector3(x, y, z));
-    pose_in_gps_frame.setRotation(tf::createQuaternionFromRPY(roll, pitch, yaw));
+    tf::Transform gps2world;
+    gps2world.setOrigin(tf::Vector3(x, y, z));
+    gps2world.setRotation(tf::createQuaternionFromRPY(roll, pitch, yaw));
 
-    tf::Transform pose_in_base_link = tf_gps_to_base_link * pose_in_gps_frame;
+    tf::Transform baselink2world = gps2world;// * gps2baselink.inverse();
 
     geometry_msgs::TransformStamped transform_msg;
-    tf::transformTFToMsg(pose_in_base_link, transform_msg.transform);
+    tf::transformTFToMsg(baselink2world, transform_msg.transform);
     transform_msg.header.frame_id = "world";
     transform_msg.header.stamp = oxford_time_to_now(stamps_ins[i]);
     transform_msg.child_frame_id = tf_prefix + "/" + "base_link";

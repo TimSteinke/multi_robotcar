@@ -11,10 +11,10 @@
     <arg name="world_zero_easting" value="620057.41" />
     <arg name="world_zero_down" value="-114.70" />
 
-    <!-- Remove first 120s of sequence -->
-    <arg name="clip_first_secs" value="120" />
+    <!-- Remove first X seconds of sequence -->
+    <arg name="clip_first_secs" value="75" />
 
-    <!-- play immediately -->
+    <!-- play after X seconds -->
     <arg name="startup_delay_secs" value="0" />
   </include>
 
