@@ -38,6 +38,8 @@ Only the following sensors are played (no 2D lidars, no radar):
 2 x Velodyne HDL-32E - Mounted to the left and right of the Navtech CTS350-X radar.
 
 ## Building and running
+To play more than one dataset at once (e.g. to simulate a multi-agent setup), very fast disk read speed is required.
+
 0. Download the [dataset and SDK](#dataset)
 1. Place this ROS package in the `catkin_ws/src` directory of your catkin workspace.
 2. Install dependencies manually (See CMakeLists.txt and package.xml) or via rosdep:
@@ -66,7 +68,7 @@ const std::string mono_left_frame = "mono_left",
                   lidar_right_frame = "velodyne_right",
                   gps_frame = "gps_ins";
 ```
-They will be prefixed by the `agent_name`, e.g. `robotcar_0/mono_left`. The launch file will start an URDF publisher for each robotcar instance.
+They will be prefixed by the `agent_name`, e.g. `robotcar_0/mono_left`. The launch file will start an URDF publisher for each robotcar instance. A base_link frame is placed approximately at the GPS frame, and the transform between `world` and `base_link` will be read from the GPS/INS solution and published.
 
 **Topics:**
 ``` bash
@@ -74,6 +76,7 @@ They will be prefixed by the `agent_name`, e.g. `robotcar_0/mono_left`. The laun
 gps/gps
 ins/gps
 ins/imu
+ins/pose
 
 # Lidar
 lidar/left

@@ -152,8 +152,17 @@ void mono::publish(std::string cam) {
   // set the rate to 10kHz = 100 usecs
   ros::Rate loop_rate(10000);
 
+  ros::Rate subscriber_poll_rate(10);
+
   size_t i = 0;
   while (i < stamps_str.size() && ros::ok()) {
+    // save disk i/o in case no one is listening
+    if (pub_image.getNumSubscribers() == 0 || pub_caminfo.getNumSubscribers() == 0) {
+      subscriber_poll_rate.sleep();
+      ros::spinOnce();
+      continue;
+    }
+
     std::string filename = stamps_str[i] + ".png";
     std::string filepath = source_path + filename;
 
@@ -248,18 +257,30 @@ void stereo::publish() {
   ros::Rate loop_rate(10000);
   size_t i = 0;
 
+  sensor_msgs::ImagePtr img_left, img_right, img_centre;
+
   while (i < stamps_str.size() && ros::ok()) {
-    std::string filename = stamps_str[i] + ".png";
-    left_path = source_path + "/left/" + filename;
-    centre_path = source_path + "/centre/" + filename;
-    right_path = source_path + "/right/" + filename;
-
-    sensor_msgs::ImagePtr img_left, img_right, img_centre;
     ros::Time stamp_now = oxford_time_to_now(stamps_ros[i]);
+    std::string filename = stamps_str[i] + ".png";
 
-    read_img_to_msg(left_path, stereo_left_frame, stamp_now, cv::COLOR_BayerGR2BGR, img_left);
-    read_img_to_msg(centre_path, stereo_centre_frame, stamp_now, cv::COLOR_BayerGR2BGR, img_right);
-    read_img_to_msg(right_path, stereo_right_frame, stamp_now, cv::COLOR_BayerGR2BGR, img_centre);
+    bool should_pub_left = left_img_pub.getNumSubscribers() > 0;
+    bool should_pub_right = right_img_pub.getNumSubscribers() > 0;
+    bool should_pub_centre = centre_img_pub.getNumSubscribers() > 0;
+
+    if (should_pub_left) {
+      left_path = source_path + "/left/" + filename;
+      read_img_to_msg(left_path, stereo_left_frame, stamp_now, cv::COLOR_BayerGR2BGR, img_left);
+    }
+
+    if (should_pub_right) {
+      right_path = source_path + "/centre/" + filename;
+      read_img_to_msg(right_path, stereo_right_frame, stamp_now, cv::COLOR_BayerGR2BGR, img_right);
+    }
+
+    if (should_pub_centre) {
+      centre_path = source_path + "/right/" + filename;
+      read_img_to_msg(centre_path, stereo_centre_frame, stamp_now, cv::COLOR_BayerGR2BGR, img_centre);
+    }
 
     info_wide_left.header.stamp = stamp_now;
     info_wide_right.header.stamp = stamp_now;
@@ -276,9 +297,9 @@ void stereo::publish() {
       t_wall_since_start = ros::Time::now() - t0_wall;
     }
 
-    left_img_pub.publish(img_left);
-    centre_img_pub.publish(img_centre);
-    right_img_pub.publish(img_right);
+    if (should_pub_left) left_img_pub.publish(img_left);
+    if (should_pub_centre) centre_img_pub.publish(img_centre);
+    if (should_pub_right) right_img_pub.publish(img_right);
 
     left_wide_info_pub.publish(info_wide_left);
     right_wide_info_pub.publish(info_wide_right);
@@ -373,10 +394,18 @@ void lidar::publish(std::string left_or_right) {
 
   // loop rate 10kHz = 100usec (just for inner loop)
   ros::Rate loop_rate(10000);
+  ros::Rate subscriber_poll_rate(10);
 
   size_t i = 0;
 
   while (i < stamps_str.size() && ros::ok()) {
+    // save disk i/o in case no one is listening
+    if (lidar_pub.getNumSubscribers() == 0) {
+      subscriber_poll_rate.sleep();
+      ros::spinOnce();
+      continue;
+    }
+
     std::string filename = stamps_str[i] + ".bin";
     std::string filepath = path + filename;
 
@@ -668,7 +697,7 @@ void gps::publish_ins_pose_solution() {
   // tf::StampedTransform gps2baselink;
   // tf_listener.lookupTransform(tf_prefix + "/" + "base_link", tf_prefix + "/" + gps_frame, ros::Time::now(),
   //                             gps2baselink);
-  
+
   ROS_INFO("Will now publish INS pose solution %s and on tf as transform between world and %s",
            pose_pub.getTopic().c_str(), (tf_prefix + "/base_link").c_str());
 
@@ -694,7 +723,7 @@ void gps::publish_ins_pose_solution() {
     gps2world.setOrigin(tf::Vector3(x, y, z));
     gps2world.setRotation(tf::createQuaternionFromRPY(roll, pitch, yaw));
 
-    tf::Transform baselink2world = gps2world;// * gps2baselink.inverse();
+    tf::Transform baselink2world = gps2world;  // * gps2baselink.inverse();
 
     geometry_msgs::TransformStamped transform_msg;
     tf::transformTFToMsg(baselink2world, transform_msg.transform);
