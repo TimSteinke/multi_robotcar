@@ -66,9 +66,10 @@ const std::string mono_left_frame = "mono_left",
                   stereo_right_frame = "stereo_right",
                   lidar_left_frame = "velodyne_left",
                   lidar_right_frame = "velodyne_right",
-                  gps_frame = "gps_ins";
+                  gps_frame = "gps_ins",
+                  initial_frame = "initial";
 ```
-They will be prefixed by the `agent_name`, e.g. `robotcar_0/mono_left`. The launch file will start an URDF publisher for each robotcar instance. A base_link frame is placed approximately at the GPS frame, and the transform between `world` and `base_link` will be read from the GPS/INS solution and published.
+They will be prefixed by the `agent_name`, e.g. `robotcar_0/mono_left`. The launch file will start an URDF publisher for each robotcar instance. A base_link frame is placed approximately at the GPS frame, and the transform between `world` and `base_link` will be read from the GPS/INS solution and published. The initial GPS/INS pose will be repeatedly published via TF.
 
 **Topics:**
 ``` bash
