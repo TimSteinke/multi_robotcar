@@ -13,6 +13,7 @@ const std::string mono_left_frame = "mono_left", mono_right_frame = "mono_right"
 const std::string base_frame = stereo_left_frame;
 std::string tf_prefix = "";
 ros::Duration clip_duration;
+std::string play_until_timestamp;
 
 // have a common starting time in dataset timeframe
 ros::Time t0_oxford;
@@ -504,7 +505,6 @@ gps::gps(const std::string &dataset_path, ros::NodeHandle nh) : nh(nh) {
   while (getline(infile, strline)) {
     GpsStructure gps_reading;
 
-    // TODO: C++ must have csv parsing libraries right?
     index = strline.find_first_of(',');
     gps_reading.timestamp = (strline.substr(0, index)).substr(3);
     strline = strline.substr(++index);
@@ -640,6 +640,20 @@ gps::gps(const std::string &dataset_path, ros::NodeHandle nh) : nh(nh) {
 
   stamps_ins.erase(stamps_ins.begin(), stamps_ins.begin() + clip_idx_ins);
   ins_readings.erase(ins_readings.begin(), ins_readings.begin() + clip_idx_ins);
+
+  if (!play_until_timestamp.empty()) {
+    // erase entries after max timestamp
+    ros::Time play_until_rostime = timestamp_to_rostime(play_until_timestamp);
+
+    size_t play_until_idx_gps = find_target_idx(stamps_gps, play_until_rostime);
+    size_t play_until_idx_ins = find_target_idx(stamps_ins, play_until_rostime);
+
+    stamps_gps.erase(stamps_gps.begin() + play_until_idx_gps, stamps_gps.end());
+    gps_readings.erase(gps_readings.begin() + play_until_idx_gps, gps_readings.end());
+
+    stamps_ins.erase(stamps_ins.begin() + play_until_idx_ins, stamps_ins.end());
+    ins_readings.erase(ins_readings.begin() + play_until_idx_ins, ins_readings.end());
+  }
 }
 
 void gps::publishgps() {
@@ -685,6 +699,7 @@ void gps::publishgps() {
 
 void gps::publish_ins_pose_solution() {
   ros::Publisher pose_pub = nh.advertise<geometry_msgs::PoseStamped>("ins/pose", 10);
+  ros::Publisher initial_pose_pub = nh.advertise<geometry_msgs::TransformStamped>("initial_pose_oxford_stamp", 1, true);
   tf::TransformBroadcaster tf_broadcaster;
   tf::TransformListener tf_listener;
 
@@ -762,10 +777,22 @@ void gps::publish_ins_pose_solution() {
     tf_broadcaster.sendTransform(initial_pose_msg);
     tf_broadcaster.sendTransform(transform_msg);
 
+    // publish a message with the initial pose and timestamp in oxford time
+    initial_pose_msg.header.stamp = stamps_ins[0];
+    initial_pose_pub.publish(initial_pose_msg);
+
     ros::spinOnce();
 
     i++;
   }
+
+  // keep publishing initial pose information for evaluation
+  ros::Rate rate(4);
+  while (ros::ok()) {
+    initial_pose_pub.publish(initial_pose_msg);
+    rate.sleep();
+  }
+
   ROS_INFO("INS pose publisher thread done");
 }
 
@@ -851,6 +878,16 @@ void read_timestamps(const std::string &filename, std::vector<std::string> &time
   size_t clip_idx = get_idx_after_seconds(timestamps_rostime, clip_duration);
   timestamps_rostime.erase(timestamps_rostime.begin(), timestamps_rostime.begin() + clip_idx);
   timestamps_str.erase(timestamps_str.begin(), timestamps_str.begin() + clip_idx);
+
+  if (!play_until_timestamp.empty()) {
+    // erase entries after max timestamp
+    ros::Time play_until_rostime = timestamp_to_rostime(play_until_timestamp);
+
+    size_t play_until_idx = find_target_idx(timestamps_rostime, play_until_rostime);
+
+    timestamps_rostime.erase(timestamps_rostime.begin() + play_until_idx, timestamps_rostime.end());
+    timestamps_str.erase(timestamps_str.begin() + play_until_idx, timestamps_str.end());
+  }
 }
 
 int find_alignment(std::vector<ros::Time> stamps_1, std::vector<ros::Time> stamps_2) {

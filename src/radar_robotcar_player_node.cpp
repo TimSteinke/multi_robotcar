@@ -34,6 +34,11 @@ int main(int argc, char **argv) {
   sensor::clip_duration = ros::Duration(clip_first_secs);
   nh.param("startup_delay_secs", startup_delay_secs, 0.);
 
+  std::string play_until_timestamp;
+  nh.getParam("play_until_timestamp", play_until_timestamp);
+  sensor::play_until_timestamp = play_until_timestamp;
+  ROS_INFO("Player node %s will play until timestamp %s", sensor::tf_prefix.c_str(), sensor::play_until_timestamp.c_str());
+
   // instantiate sensor classes
   sensor::mono mono(sdk_path, dataset_path, nh);
   sensor::stereo stereo(sdk_path, dataset_path, nh);

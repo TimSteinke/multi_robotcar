@@ -5,6 +5,8 @@
   <arg name="tf_prefix" default="robotcar_0" />
   <arg name="clip_first_secs" default="0" />
   <arg name="startup_delay_secs" default="0" />
+  <!-- play until this timestamp, string indicating microsecs since epoch. will be ignored if empty string -->
+  <arg name="play_until_timestamp" default="" />
 
   <!-- define the UTM world origin for the published INS pose (approximately the starting point) -->
   <arg name="world_zero_northing" default="5735848.36" />
@@ -21,6 +23,7 @@
   <param name="clip_first_secs" value="$(arg clip_first_secs)" />
   <!-- start with a delay of X seconds -->
   <param name="startup_delay_secs" value="$(arg startup_delay_secs)" />
+  <param name="play_until_timestamp" value="$(arg play_until_timestamp)" type="str" />
 
   <param name="world_zero_northing" value="$(arg world_zero_northing)" />
   <param name="world_zero_easting" value="$(arg world_zero_easting)" />

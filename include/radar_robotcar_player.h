@@ -34,6 +34,7 @@ extern const std::string mono_left_frame, mono_right_frame, mono_rear_frame,
 extern ros::Time t0_oxford, t0_wall;
 extern std::string tf_prefix;
 extern ros::Duration clip_duration;
+extern std::string play_until_timestamp;
 
 struct CameraCalibration {
   // Image heigth, width
