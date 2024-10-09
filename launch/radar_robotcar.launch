@@ -42,9 +42,4 @@
     <param name="use_tf_static" value="true" />
   </node>
 
-  <node name="robot_state_publisher_nonstatic" pkg="robot_state_publisher"
-    type="robot_state_publisher" required="true" >
-    <param name="use_tf_static" value="false" />
-  </node>
-
 </launch>
