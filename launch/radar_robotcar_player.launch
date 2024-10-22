@@ -5,7 +5,7 @@
     <arg name="dataset"
       value="/workspaces/collaborative-scene-graphs/data/radar-robotcar/2019-01-11-13-24-51-radar-oxford-10k" />
     <arg name="sdk" value="/workspaces/collaborative-scene-graphs/src/robotcar_dataset_sdk" />
-    <arg name="play_until_timestamp" value="9999999999999999999" />
+    <arg name="play_until_timestamp" value="0001547214125480917" />
 
     <!-- define the UTM world origin for the published INS pose (approximately the starting point) -->
     <arg name="world_zero_northing" value="5735848.36" />
@@ -13,7 +13,7 @@
     <arg name="world_zero_down" value="-114.70" />
 
     <!-- Remove first X seconds of sequence -->
-    <arg name="clip_first_secs" value="75" />
+    <arg name="clip_first_secs" value="60" />
 
     <!-- play after X seconds -->
     <arg name="startup_delay_secs" value="0" />
