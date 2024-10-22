@@ -1,4 +1,5 @@
 #include <radar_robotcar_player.h>
+#include <radar_robotcar_player/OxfordTime.h>
 
 namespace sensor {
 
@@ -251,6 +252,9 @@ void stereo::publish() {
   ros::Publisher left_narrow_info_pub = nh.advertise<sensor_msgs::CameraInfo>("stereo/info/narrow/left", 10);
   ros::Publisher right_narrow_info_pub = nh.advertise<sensor_msgs::CameraInfo>("stereo/info/narrow/right", 10);
 
+  // publish oxford timestamps of each frame
+  ros::Publisher oxford_clock_pub = nh.advertise<radar_robotcar_player::OxfordTime>("oxford_clock", 10);
+
   ROS_INFO("Will now begin publishing stereo images on: %s, %s, %s", left_img_pub.getTopic().c_str(),
            centre_img_pub.getTopic().c_str(), right_img_pub.getTopic().c_str());
 
@@ -259,6 +263,7 @@ void stereo::publish() {
   size_t i = 0;
 
   sensor_msgs::ImagePtr img_left, img_right, img_centre;
+  radar_robotcar_player::OxfordTime clock_msg;
 
   while (i < stamps_str.size() && ros::ok()) {
     ros::Time stamp_now = oxford_time_to_now(stamps_ros[i]);
@@ -307,6 +312,13 @@ void stereo::publish() {
 
     left_narrow_info_pub.publish(info_narrow_left);
     right_narrow_info_pub.publish(info_narrow_right);
+
+    // publish current oxford time so that other ros nodes can access dataset
+    // files directly. Currently synced to front camera for preprocessed object
+    // tracking.
+    clock_msg.header.stamp = stamp_now;
+    clock_msg.oxford_time = ros::Time(stamps_ros[i]);
+    oxford_clock_pub.publish(clock_msg);
 
     ros::spinOnce();
 

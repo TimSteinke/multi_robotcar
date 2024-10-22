@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   geometry_msgs
   nav_msgs
+  message_generation
   tf
   cv_bridge
   image_transport
@@ -15,6 +16,12 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(OpenCV REQUIRED)
 find_package(Eigen3)
 find_package(PCL REQUIRED)
+
+add_message_files(FILES
+        OxfordTime.msg
+        )
+
+generate_messages(DEPENDENCIES std_msgs)
 
 set_target_properties(${TARGET} PROPERTIES
 COMPILE_FLAGS "-pthread"
@@ -34,7 +41,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES ${PROJECT_NAME}
-  CATKIN_DEPENDS std_msgs roscpp
+  CATKIN_DEPENDS std_msgs roscpp message_runtime
   DEPENDS EIGEN3 OpenCV PCL
 )
 
