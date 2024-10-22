@@ -778,7 +778,7 @@ void gps::publish_ins_pose_solution() {
     tf_broadcaster.sendTransform(transform_msg);
 
     // publish a message with the initial pose and timestamp in oxford time
-    initial_pose_msg.header.stamp = stamps_ins[0];
+    initial_pose_msg.header.stamp = ros::Time::now();
     initial_pose_pub.publish(initial_pose_msg);
 
     ros::spinOnce();
@@ -789,6 +789,7 @@ void gps::publish_ins_pose_solution() {
   // keep publishing initial pose information for evaluation
   ros::Rate rate(4);
   while (ros::ok()) {
+    initial_pose_msg.header.stamp = ros::Time::now();
     initial_pose_pub.publish(initial_pose_msg);
     rate.sleep();
   }
