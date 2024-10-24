@@ -782,11 +782,14 @@ void gps::publish_ins_pose_solution() {
       initial_pose_msg.transform = transform_msg.transform;
       initial_pose_msg.child_frame_id = tf_prefix + "/" + initial_frame;
     }
-    initial_pose_msg.header.stamp = ros::Time::now();
+
+    if (i % 100 == 0) {
+      initial_pose_msg.header.stamp = ros::Time::now();
+      tf_broadcaster.sendTransform(initial_pose_msg);
+    }
 
     // publish the message
     pose_pub.publish(pose_msg);
-    tf_broadcaster.sendTransform(initial_pose_msg);
     tf_broadcaster.sendTransform(transform_msg);
 
     // publish a message with the initial pose and timestamp in oxford time
