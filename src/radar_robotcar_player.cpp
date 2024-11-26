@@ -725,8 +725,10 @@ void gps::publish_ins_pose_solution() {
   // tf_listener.lookupTransform(tf_prefix + "/" + "base_link", tf_prefix + "/" + gps_frame, ros::Time::now(),
   //                             gps2baselink);
 
-  ROS_INFO("Will now publish INS pose solution %s and on tf as transform between world and %s",
-           pose_pub.getTopic().c_str(), (tf_prefix + "/base_link").c_str());
+  // ROS_INFO("Will now publish INS pose solution %s and on tf as transform between world and %s",
+  //          pose_pub.getTopic().c_str(), (tf_prefix + "/base_link").c_str());
+  ROS_INFO("Will now publish INS pose solution on topic %s ",
+           pose_pub.getTopic().c_str());
 
   float world_zero_northing, world_zero_easting, world_zero_down;
   nh.getParam("world_zero_northing", world_zero_northing);
@@ -790,7 +792,8 @@ void gps::publish_ins_pose_solution() {
 
     // publish the message
     pose_pub.publish(pose_msg);
-    tf_broadcaster.sendTransform(transform_msg);
+    // map to base link publishing on tf disabled to allow HDL SLAM publishing odom pose estimate
+    // tf_broadcaster.sendTransform(transform_msg);
 
     // publish a message with the initial pose and timestamp in oxford time
     initial_pose_msg.header.stamp = ros::Time::now();
