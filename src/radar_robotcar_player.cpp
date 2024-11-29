@@ -792,8 +792,10 @@ void gps::publish_ins_pose_solution() {
 
     // publish the message
     pose_pub.publish(pose_msg);
-    // map to base link publishing on tf disabled to allow HDL SLAM publishing odom pose estimate
-    // tf_broadcaster.sendTransform(transform_msg);
+    
+    // publish gps/ins in different frame for ground truth access from metrics node
+    transform_msg.child_frame_id = tf_prefix + "/gt/base_link";
+    tf_broadcaster.sendTransform(transform_msg);
 
     // publish a message with the initial pose and timestamp in oxford time
     initial_pose_msg.header.stamp = ros::Time::now();
