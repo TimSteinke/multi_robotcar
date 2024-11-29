@@ -61,6 +61,7 @@ int main(int argc, char **argv) {
 
   // set common starting wall time
   sensor::t0_wall = ros::Time::now();
+  nh.setParam("timediff_wall2oxford", (sensor::t0_wall - sensor::t0_oxford).toSec());
 
   // make threads
   std::thread thread_mono_left = mono.thread_left();
