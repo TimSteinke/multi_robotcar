@@ -39,6 +39,14 @@ int main(int argc, char **argv) {
   sensor::play_until_timestamp = play_until_timestamp;
   ROS_INFO("Player node %s will play until timestamp %s", sensor::tf_prefix.c_str(), sensor::play_until_timestamp.c_str());
 
+  bool use_sim_time;
+  nh.getParam("/use_sim_time", use_sim_time);
+  if (use_sim_time) {
+    ROS_WARN("Player node %s will use sim time", sensor::tf_prefix.c_str());
+  } else {
+    ROS_WARN("Player node %s will NOT use sim time", sensor::tf_prefix.c_str());
+  }
+
   // instantiate sensor classes
   sensor::mono mono(sdk_path, dataset_path, nh);
   sensor::stereo stereo(sdk_path, dataset_path, nh);
