@@ -781,8 +781,15 @@ void gps::publish_ins_pose_solution() {
     // publish the initial pose
     if (i == 0) {
       initial_pose_msg.header = transform_msg.header;
-      initial_pose_msg.transform = transform_msg.transform;
       initial_pose_msg.child_frame_id = tf_prefix + "/" + initial_frame;
+
+      initial_pose_msg.transform = transform_msg.transform;
+      double initial_shift_x;
+      double initial_shift_y;
+      nh.getParam("initial_shift_x", initial_shift_x);
+      nh.getParam("initial_shift_y", initial_shift_y);
+      initial_pose_msg.transform.translation.x += initial_shift_x;
+      initial_pose_msg.transform.translation.y += initial_shift_y;
     }
 
     if (i % 100 == 0) {
@@ -845,7 +852,6 @@ void gps::publishins() {
     imu.orientation.y = q.y();
     imu.orientation.z = q.z();
     imu.orientation.w = q.w();
-    // TODO: we have a velocity solution from IMU, but how to publish?
 
     // wait until it's time to publish this message
     ros::Duration t_wall_since_start = ros::Time::now() - t0_wall;

@@ -13,6 +13,10 @@
   <arg name="world_zero_easting" default="620057.41" />
   <arg name="world_zero_down" default="-114.70" />
 
+  <!-- allow to shift the initial pose to simulate misaligned frames -->
+  <arg name="initial_shift_x" default="0.0" />
+  <arg name="initial_shift_y" default="0.0" />
+
   <!-- full paths to the dataset folder -->
   <param name="dataset" value="$(arg dataset)" />
   <!-- full path to the base robotcar sdk (NOT radar robotcar sdk) -->
@@ -28,6 +32,9 @@
   <param name="world_zero_northing" value="$(arg world_zero_northing)" />
   <param name="world_zero_easting" value="$(arg world_zero_easting)" />
   <param name="world_zero_down" value="$(arg world_zero_down)" />
+
+  <param name="initial_shift_x" value="$(arg initial_shift_x)" />
+  <param name="initial_shift_y" value="$(arg initial_shift_y)" />
 
   <!-- start this player node -->
   <node name="radar_robotcar_player" pkg="radar_robotcar_player" type="radar_robotcar_player_node"
