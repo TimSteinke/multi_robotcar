@@ -1,3 +1,4 @@
+<!-- this is the launch file for including in other launch files -->
 <launch>
   <arg name="dataset"
     default="/workspaces/collaborative-scene-graphs/data/radar-robotcar/2019-01-11-13-24-51-radar-oxford-10k" />

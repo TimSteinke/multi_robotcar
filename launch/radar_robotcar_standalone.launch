@@ -1,3 +1,4 @@
+<!-- this launch file is for launching directly from roslaunch -->
 <launch>
 
   <include file="$(find radar_robotcar_player)/launch/radar_robotcar.launch" ns="robotcar_0">
