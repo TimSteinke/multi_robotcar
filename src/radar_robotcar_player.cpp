@@ -159,7 +159,7 @@ void mono::publish(std::string cam) {
   size_t i = 0;
   while (i < stamps_str.size() && ros::ok()) {
     // save disk i/o in case no one is listening
-    if (pub_image.getNumSubscribers() == 0 || pub_caminfo.getNumSubscribers() == 0) {
+    if (pub_image.getNumSubscribers() == 0) {
       subscriber_poll_rate.sleep();
       ros::spinOnce();
       continue;
@@ -982,7 +982,7 @@ void read_img_to_msg(std::string path, std::string frame, ros::Time stamp, int c
   cv::Mat image = cv::imread(path, -1);
   cv::cvtColor(image, image, cv_encoding);
   img_msg_result = cv_bridge::CvImage(std_msgs::Header(), "bgr8", image).toImageMsg();
-  img_msg_result->header.frame_id = tf_prefix + "/" + stereo_left_frame;
+  img_msg_result->header.frame_id = tf_prefix + "/" + frame;
   img_msg_result->header.stamp = stamp;
 }
 
