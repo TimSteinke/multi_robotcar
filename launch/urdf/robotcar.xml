@@ -55,13 +55,15 @@
   <joint name="stereo_left_to_mono_left" type="fixed">
     <parent link="stereo_left" />
     <child link="mono_left" />
-    <origin rpy="0.2079 -0.2339 1.2321" xyz="-0.0905 1.6375 0.2803" />
+    <!-- <origin rpy="0.2079 -0.2339 1.2321" xyz="-0.0905 1.6375 0.2803" /> -->
+    <origin rpy="-0.28849646803035267 -0.11961427274132959 -1.2392173644648532" xyz="-1.53813069 -0.59970903  0.2065615" />
   </joint>
 
   <joint name="stereo_left_to_mono_right" type="fixed">
     <parent link="stereo_left" />
     <child link="mono_right" />
-    <origin rpy="-0.1961 -0.2469 -1.2675" xyz="-0.2587 -1.6810 0.3226" />
+    <!-- <origin rpy="-0.1961 -0.2469 -1.2675" xyz="-0.2587 -1.6810 0.3226" /> -->
+    <origin rpy="0.2930387978631263 -0.1146078771440235 1.2749777258094768" xyz="-1.55954525  0.72283283  0.20515545" />
   </joint>
 
   <joint name="stereo_left_to_mono_rear" type="fixed">
