@@ -721,14 +721,14 @@ void gps::publish_ins_pose_solution() {
     ros::shutdown();
   }
 
-  // tf::StampedTransform gps2baselink;
-  // tf_listener.lookupTransform(tf_prefix + "/" + "base_link", tf_prefix + "/" + gps_frame, ros::Time::now(),
-  //                             gps2baselink);
+  tf::StampedTransform gps2baselink;
+  tf_listener.lookupTransform(tf_prefix + "/" + "base_link", tf_prefix + "/" + gps_frame, ros::Time::now(),
+                              gps2baselink);
 
-  // ROS_INFO("Will now publish INS pose solution %s and on tf as transform between world and %s",
-  //          pose_pub.getTopic().c_str(), (tf_prefix + "/base_link").c_str());
-  ROS_INFO("Will now publish INS pose solution on topic %s ",
-           pose_pub.getTopic().c_str());
+  ROS_INFO("Will now publish INS pose solution on %s and on tf as transform between world and %s",
+           pose_pub.getTopic().c_str(), (tf_prefix + "/base_link").c_str());
+  // ROS_INFO("Will now publish INS pose solution on topic %s ",
+  //          pose_pub.getTopic().c_str());
 
   float world_zero_northing, world_zero_easting, world_zero_down;
   nh.getParam("world_zero_northing", world_zero_northing);
@@ -753,7 +753,7 @@ void gps::publish_ins_pose_solution() {
     gps2world.setOrigin(tf::Vector3(x, y, z));
     gps2world.setRotation(tf::createQuaternionFromRPY(roll, pitch, yaw));
 
-    tf::Transform baselink2world = gps2world;  // * gps2baselink.inverse();
+    tf::Transform baselink2world = gps2world * gps2baselink.inverse();
 
     geometry_msgs::TransformStamped transform_msg;
     tf::transformTFToMsg(baselink2world, transform_msg.transform);
