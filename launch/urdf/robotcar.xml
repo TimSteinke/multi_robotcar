@@ -37,7 +37,7 @@
   <joint name="base_link_to_stereo_left" type="fixed">
     <parent link="base_link" />
     <child link="stereo_left" />
-    <origin rpy="0 0 0" xyz="1.72 -0.12 -1.07" />
+    <origin rpy="0.01271 -0.03993 -1.00550" xyz="1.759 -0.1126 -1.1269" />
   </joint>
 
   <joint name="stereo_left_to_stereo_centre" type="fixed">
