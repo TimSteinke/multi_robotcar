@@ -1,6 +1,7 @@
 <!-- this launch file is for launching directly from roslaunch -->
 <launch>
 
+  <param name="use_sim_time" value="false" />
   <include file="$(find radar_robotcar_player)/launch/radar_robotcar.launch" ns="robotcar_0">
     <arg name="tf_prefix" value="robotcar_0" />
     <arg name="dataset"

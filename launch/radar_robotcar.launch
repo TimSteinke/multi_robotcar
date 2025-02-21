@@ -18,6 +18,16 @@
   <arg name="initial_shift_x" default="0.0" />
   <arg name="initial_shift_y" default="0.0" />
 
+  <!-- Publish URDF -->
+  <param name="robot_description"
+    command="cat $(find radar_robotcar_player)/launch/urdf/robotcar.xml" />
+
+  <node name="robot_state_publisher_static" pkg="robot_state_publisher"
+    type="robot_state_publisher" required="true" >
+    <param name="use_tf_static" value="true" />
+  </node>
+
+
   <!-- full paths to the dataset folder -->
   <param name="dataset" value="$(arg dataset)" />
   <!-- full path to the base robotcar sdk (NOT radar robotcar sdk) -->
@@ -39,15 +49,6 @@
 
   <!-- start this player node -->
   <node name="radar_robotcar_player" pkg="radar_robotcar_player" type="radar_robotcar_player_node"
-    output="screen" respawn="false" />
-
-  <!-- Publish URDF -->
-  <param name="robot_description"
-    command="cat $(find radar_robotcar_player)/launch/urdf/robotcar.xml" />
-
-  <node name="robot_state_publisher_static" pkg="robot_state_publisher"
-    type="robot_state_publisher" required="true" >
-    <param name="use_tf_static" value="true" />
-  </node>
+    output="screen" respawn="false" required="true" />
 
 </launch>
