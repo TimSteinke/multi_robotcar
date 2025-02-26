@@ -1,16 +1,16 @@
-# ROS Radar Robotcar Player
-This is a ROS node (targeting ROS noetic) for playing the Lidar, Camera, and GPS/INS modalities of the [Oxford Radar RobotCar Dataset](https://oxford-robotics-institute.github.io/radar-robotcar-dataset/) in real-time.
+# Multi Robotcar: ROS Player to Simulate Multiple Radar Robotcar Agents
+This is a ROS node (targeting ROS noetic) for playing the Lidar, Camera, and GPS/INS modalities of the [Oxford Radar RobotCar Dataset](https://oxford-robotics-institute.github.io/radar-robotcar-dataset/) in real-time. It supports playing multiple Robotcars simultaneously within their own ROS namespaces, e.g. to test collaborative SLAM systems. 
 
-**Note:** This is a rewrite of [radar-robotcar-dataset-ros](https://github.com/Rongxi-Zhang/radar-robotcar-dataset-ros/tree/ros1) by Rongxi Zhang. The original license ([GPL v3](./LICENSE)) has been kept.
+**Note:** This code is adapted from [radar-robotcar-dataset-ros](https://github.com/Rongxi-Zhang/radar-robotcar-dataset-ros/tree/ros1) by Rongxi Zhang. The original license ([GPL v3](./LICENSE)) has been kept.
 
 **Changes**:
 - No saving to rosbag
 - No radar support
 
+- Can play **multiple sequences** in parallel to simulate a multi-agent setup
 - Sensor streams play **synchronously** by coupling playback to real-time
 - Static TF publishing via **URDF**
 - Delayed playback and 'clipping' feature to start in the middle of a sequence (see parameters in launch file)
-- Can play **multiple sequences** in parallel to simulate a multi-agent setup
 - Some refactoring and renaming
 - Uses ROS logging interface
 
