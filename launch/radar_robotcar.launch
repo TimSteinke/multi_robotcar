@@ -49,6 +49,6 @@
 
   <!-- start this player node -->
   <node name="radar_robotcar_player" pkg="radar_robotcar_player" type="radar_robotcar_player_node"
-    output="screen" respawn="false" required="true" />
+    output="screen" respawn="false" />
 
 </launch>

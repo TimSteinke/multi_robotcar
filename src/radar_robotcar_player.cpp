@@ -7,7 +7,7 @@ namespace sensor {
 const std::string mono_left_frame = "mono_left", mono_right_frame = "mono_right", mono_rear_frame = "mono_rear",
                   stereo_left_frame = "stereo_left", stereo_centre_frame = "stereo_centre",
                   stereo_right_frame = "stereo_right", lidar_left_frame = "velodyne_left",
-                  lidar_right_frame = "velodyne_right", gps_frame = "gps_ins", initial_frame = "initial";
+                  lidar_right_frame = "velodyne_right", gps_frame = "gps_ins";
 
 // note that stereo_left_frame is the reference, all other sensors have
 // transforms from this frame to theirs.
@@ -706,12 +706,12 @@ void gps::publishgps() {
     // necessary
     i++;
   }
+
   ROS_INFO("GPS publisher thread done");
 }
 
 void gps::publish_ins_pose_solution() {
   ros::Publisher pose_pub = nh.advertise<geometry_msgs::PoseStamped>("ins/pose", 10);
-  ros::Publisher initial_pose_pub = nh.advertise<geometry_msgs::TransformStamped>("initial_pose_oxford_stamp", 1, true);
   tf::TransformBroadcaster tf_broadcaster;
   tf::TransformListener tf_listener;
 
@@ -737,7 +737,6 @@ void gps::publish_ins_pose_solution() {
 
   // set the rate to 10kHz = 100 usecs
   ros::Rate loop_rate(10000);
-  geometry_msgs::TransformStamped initial_pose_msg;
 
   size_t i = 0;
   while (i < ins_readings.size() && ros::ok()) {
@@ -778,25 +777,6 @@ void gps::publish_ins_pose_solution() {
       t_wall_since_start = ros::Time::now() - t0_wall;
     }
 
-    // publish the initial pose
-    if (i == 0) {
-      initial_pose_msg.header = transform_msg.header;
-      initial_pose_msg.child_frame_id = tf_prefix + "/" + initial_frame;
-
-      initial_pose_msg.transform = transform_msg.transform;
-      double initial_shift_x;
-      double initial_shift_y;
-      nh.getParam("initial_shift_x", initial_shift_x);
-      nh.getParam("initial_shift_y", initial_shift_y);
-      initial_pose_msg.transform.translation.x += initial_shift_x;
-      initial_pose_msg.transform.translation.y += initial_shift_y;
-    }
-
-    if (i % 100 == 0) {
-      initial_pose_msg.header.stamp = ros::Time::now();
-      tf_broadcaster.sendTransform(initial_pose_msg);
-    }
-
     // publish the message
     pose_pub.publish(pose_msg);
     
@@ -804,20 +784,16 @@ void gps::publish_ins_pose_solution() {
     transform_msg.child_frame_id = tf_prefix + "/gt/base_link";
     tf_broadcaster.sendTransform(transform_msg);
 
-    // publish a message with the initial pose and timestamp in oxford time
-    initial_pose_msg.header.stamp = ros::Time::now();
-    initial_pose_pub.publish(initial_pose_msg);
-
     ros::spinOnce();
 
     i++;
   }
 
-  // keep publishing initial pose information for evaluation
   ros::Rate rate(4);
   while (ros::ok()) {
-    initial_pose_msg.header.stamp = ros::Time::now();
-    initial_pose_pub.publish(initial_pose_msg);
+    // keep publishing initial pose information for evaluation
+    // initial_pose_msg.header.stamp = ros::Time::now();
+    // initial_pose_pub.publish(initial_pose_msg);
     rate.sleep();
   }
 
