@@ -1,7 +1,10 @@
 # Multi Robotcar: ROS Player to Simulate Multiple Radar Robotcar Agents
-This is a ROS node (targeting ROS noetic) for playing the Lidar, Camera, and GPS/INS modalities of the [Oxford Radar RobotCar Dataset](https://oxford-robotics-institute.github.io/radar-robotcar-dataset/) in real-time. It supports playing multiple Robotcars simultaneously within their own ROS namespaces, e.g. to test collaborative SLAM systems. 
+This is a ROS node (targeting ROS noetic) for playing the Lidar, Camera, and GPS/INS modalities of the [Oxford Radar RobotCar Dataset](https://oxford-robotics-institute.github.io/radar-robotcar-dataset/) in real-time. It supports playing multiple Robotcars simultaneously within their own ROS namespaces, e.g. to test collaborative SLAM systems.
 
-**Note:** This code is adapted from [radar-robotcar-dataset-ros](https://github.com/Rongxi-Zhang/radar-robotcar-dataset-ros/tree/ros1) by Rongxi Zhang. The original license ([GPL v3](./LICENSE)) has been kept.
+The player was created as a testbed for [CURB-OSG](https://github.com/robot-learning-freiburg/CURB-OSG), a collaborative open-vocabulary scene graph mapping system focussed on urban driving scenes.
+
+
+**Note:** This code is adapted from [radar-robotcar-dataset-ros](https://github.com/Rongxi-Zhang/radar-robotcar-dataset-ros/tree/ros1) by Rongxi Zhang.
 
 **Changes**:
 - No saving to rosbag
