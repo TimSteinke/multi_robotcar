@@ -26,6 +26,7 @@ Obtain the data and other resources from here (requires permission):
 ### Sensor Suite
 <div align=center>
 <img src = pictures/radar-robotcar.png width="450" height="450" />
+    <p>Image credit: the authors of Radar RobotCar</p>
 </div>
 
 Only the following sensors are played (no 2D lidars, no radar):
